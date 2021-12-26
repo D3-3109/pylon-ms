@@ -1,1 +1,0 @@
-{"version":3,"file":"manageservers.js","sourceRoot":"","sources":["../../src/gameserver/manageservers.ts"],"names":[],"mappings":";;;;;;;;;;;AAAA,SAAe,MAAM,CAAC,OAAO,EAAE,OAAO;;QAClC,OAAO,CAAC,GAAG,CAAC,GAAG,EAAE,CAAO,OAAO,EAAE,KAAK,EAAE,EAAE;YACxC,OAAO,EAAE,KAAK,EAAE,OAAO,EAAE,CAAA;QAC3B,CAAC,CAAA,CAAC,CAAA;IACN,CAAC;CAAA;AAED,kBAAe,MAAM,CAAC"}

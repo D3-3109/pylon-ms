@@ -1,9 +1,9 @@
-import Fastify, { fastify, FastifyInstance, RouteShorthandOptions } from 'fastify'
-import ServerManagement from './manage_servers/manage_servers';
+import Fastify, { fastify, FastifyInstance, RouteShorthandOptions } from 'fastify';
 import fastifySwagger from 'fastify-swagger';
 import { GameServerProvidedAuthInfoSchema, PrivateGameServerPublicPropsSchema, GameServerFullSchema } from './interfaces/game_server';
 import { GameModSchema } from './interfaces/game_mod';
 import { RunGameServersListCleanJob } from './state/game_servers';
+import { connectToBanDatabase } from './state/ban_system';
 
 
 
@@ -27,6 +27,8 @@ server.addSchema(GameServerProvidedAuthInfoSchema);
 
 
 
+//█▀ █░█░█ ▄▀█ █▀▀ █▀▀ █▀▀ █▀█
+//▄█ ▀▄▀▄▀ █▀█ █▄█ █▄█ ██▄ █▀▄
 
 server.register(fastifySwagger, {
   exposeRoute: true,
@@ -40,16 +42,27 @@ server.register(fastifySwagger, {
 });
 
 
-server.register(ServerManagement);
+
+//█▀ █▀▀ █▀█ █░█ █▀▀ █▀█   █▀█ █▀█ █░█ ▀█▀ █ █▄░█ █▀▀
+//▄█ ██▄ █▀▄ ▀▄▀ ██▄ █▀▄   █▀▄ █▄█ █▄█ ░█░ █ █░▀█ █▄█
+
+server.register(require('./manage_servers/manage_servers'));
+server.register(require('./ban_system/ban_system'));
+
+
+
+require('dotenv').config();
 
 
 const start = async () => {
     try {
       await server.listen(process.env.PORT || 3000)
-  
+      
       const address = server.server.address()
       const port = typeof address === 'string' ? address : address?.port
-  
+
+      connectToBanDatabase().catch(err => server.log.error(err));
+
     } catch (err) {
       server.log.error(err)
       process.exit(1)

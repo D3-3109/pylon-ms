@@ -118,6 +118,12 @@ export const GetPrivateServerInfo: RouteOptions = {
                 properties: {
                     error: { type: 'string' }
                 }
+            },
+            404: {
+                type: 'object',
+                properties: {
+                    error: { type: 'string' }
+                }
             }
         }
     },
@@ -125,7 +131,7 @@ export const GetPrivateServerInfo: RouteOptions = {
         const { publicRef, password } = req.body as any;
         const gameServer = FindGameServerByPublicRef(publicRef);
         if(!gameServer) {
-            res.status(403).send({error: 'Game server not found.'});
+            res.status(404).send({error: 'Game server not found.'});
             return;
         }
         if(gameServer.password !== password) {

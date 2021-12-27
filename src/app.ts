@@ -1,8 +1,9 @@
 import Fastify, { fastify, FastifyInstance, RouteShorthandOptions } from 'fastify'
 import ServerManagement from './manage_servers/manage_servers';
 import fastifySwagger from 'fastify-swagger';
-import { GameServerProvidedAuthInfoSchema, PrivateGameServerPublicPropsSchema, GameServerFullSchema } from './interfaces/GameServer';
-import { GameModSchema } from './interfaces/GameMod';
+import { GameServerProvidedAuthInfoSchema, PrivateGameServerPublicPropsSchema, GameServerFullSchema } from './interfaces/game_server';
+import { GameModSchema } from './interfaces/game_mod';
+import { RunGameServersListCleanJob } from './state/game_servers';
 
 
 
@@ -56,3 +57,6 @@ const start = async () => {
   }
 start()
 
+setInterval(() => {
+  RunGameServersListCleanJob();
+}, 10000);

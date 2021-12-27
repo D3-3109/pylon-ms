@@ -1,4 +1,4 @@
-import  { GameServer, GetGameServerID } from '../interfaces/GameServer';
+import  { GameServer, GetGameServerID } from '../interfaces/game_server';
 
 
 let gameServers: { [id: string]: GameServer} = {};
@@ -13,6 +13,10 @@ export function GetPrivateGameServers() {
 
 export function FindGameServerByID(ID: string): GameServer {
     return gameServers[ID];
+}
+
+export function FindGameServerByPublicRef(ID: string) {
+    return Object.values(gameServers).find(gs => gs.publicRef === ID);
 }
 
 export function FindAndDeleteGameServerByID(ID: string): boolean {
@@ -30,5 +34,19 @@ export function UpdateGameServerByID(newInfo: GameServer) {
 
     gameServers[ID] = {...gameServers[ID], ...newInfo};
     gameServers[ID].lastHeartbeat = Date.now();
+    if(!gameServers[ID].publicRef) {
+        gameServers[ID].publicRef = Buffer.from(Math.random().toString()).toString("base64").substr(10, 5);
+    }
     return true;
+}
+
+export function RunGameServersListCleanJob() {
+    let noServersCleaned = 0;
+    for(const [ID, gameServer] of Object.entries(gameServers)) {
+        if(Date.now() - gameServer.lastHeartbeat > 20000) {
+            delete gameServers[ID];
+            noServersCleaned++;
+        }
+    }
+    return noServersCleaned;
 }

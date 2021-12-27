@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { GameMod } from './GameMod';
+import { GameMod } from './game_mod';
 
 export interface GameServer {
     name: string,
@@ -23,6 +23,8 @@ export interface GameServer {
     reloadedVersion: string,
 
     lastHeartbeat: number,
+    
+    publicRef?: string
 
     // do not use this property directly!! it's better to use GetServerID(this server)
     cachedID?: string
@@ -54,7 +56,8 @@ export const PrivateGameServerPublicPropsSchema = {
     type: 'object',
     properties: {
         name: { type: 'string' },
-        description: { type: 'string' }
+        description: { type: 'string' },
+        publicRef: { type: 'string' }
     }
 }
 

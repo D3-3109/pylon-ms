@@ -1,6 +1,6 @@
 import { RouteOptions } from "fastify/types/route";
-import { GameServer, MakeGameServerID } from "../interfaces/GameServer";
-import { GetPrivateGameServers, GetPublicGameServers, UpdateGameServerByID } from "../state/game_servers";
+import { GameServer, MakeGameServerID } from "../interfaces/game_server";
+import { FindGameServerByPublicRef, GetPrivateGameServers, GetPublicGameServers, UpdateGameServerByID } from "../state/game_servers";
 import { CheckGameServerConnection } from "./server_connect_check";
 
 
@@ -90,5 +90,48 @@ export const UpdateGameServerRoute: RouteOptions = {
             res.status(500).send({error: 'Something went wrong on our side.. Please contact R5R developers.'});
             return;
         }
+    }
+}
+
+export const GetPrivateServerInfo: RouteOptions = {
+    method: 'POST',
+    url: '/api/game_servers/game_server_private_info',
+    schema: {
+        body: {
+            type: 'object',
+            properties: {
+                publicRef: { type: 'string' },
+                password: { type: 'string' }
+            }
+        },
+        response: {
+            200: {
+                type: 'object',
+                properties: {
+                    gameServer: {
+                        $ref: 'GameServerFullSchema'
+                    }
+                }
+            },
+            403: {
+                type: 'object',
+                properties: {
+                    error: { type: 'string' }
+                }
+            }
+        }
+    },
+    handler: (req, res) => {
+        const { publicRef, password } = req.body as any;
+        const gameServer = FindGameServerByPublicRef(publicRef);
+        if(!gameServer) {
+            res.status(403).send({error: 'Game server not found.'});
+            return;
+        }
+        if(gameServer.password !== password) {
+            res.status(403).send({error: 'Wrong password.'});
+            return;
+        }
+        res.send({gameServer});
     }
 }

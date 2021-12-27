@@ -46,8 +46,9 @@ server.register(fastifySwagger, {
 //█▀ █▀▀ █▀█ █░█ █▀▀ █▀█   █▀█ █▀█ █░█ ▀█▀ █ █▄░█ █▀▀
 //▄█ ██▄ █▀▄ ▀▄▀ ██▄ █▀▄   █▀▄ █▄█ █▄█ ░█░ █ █░▀█ █▄█
 
-server.register(require('./manage_servers/manage_servers'));
-server.register(require('./ban_system/ban_system'));
+server.register(require('./routes/manage_servers/manage_servers'));
+server.register(require('./routes/ban_system/ban_system'));
+server.register(require('./routes/global_stats/global_stats'));
 
 
 

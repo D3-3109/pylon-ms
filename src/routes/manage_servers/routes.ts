@@ -1,6 +1,6 @@
 import { RouteOptions } from "fastify/types/route";
-import { GameServer, MakeGameServerID } from "../interfaces/game_server";
-import { FindGameServerByPublicRef, GetPrivateGameServers, GetPublicGameServers, UpdateGameServerByID } from "../state/game_servers";
+import { GameServer } from "../../interfaces/game_server";
+import { FindGameServerByPublicRef, GetPrivateGameServers, GetPublicGameServers, UpdateGameServerByID } from "../../state/game_servers";
 import { CheckGameServerConnection } from "./server_connect_check";
 
 
@@ -35,9 +35,6 @@ export const GetGameServersListRoute: RouteOptions = {
         });
     }
 };
-
-
-
 
 export const UpdateGameServerRoute: RouteOptions = {
     method: 'POST',
@@ -76,22 +73,20 @@ export const UpdateGameServerRoute: RouteOptions = {
         const { ipAddress, gamePort, encryptionKey } = gameServer;
 
         try {
-            await CheckGameServerConnection(ipAddress, gamePort, encryptionKey);
+            const succeededPinging = await CheckGameServerConnection(ipAddress, gamePort, encryptionKey);
+            if(!succeededPinging) {
+                res.status(403).send({error: 'Game server connection check failed.'});
+                return;
+            }
         } catch(e) {
-            res.status(403).send({error: 'Game server connection check failed.'});
+            res.status(500).send({error: 'Something wrong happened while attempting to connect to the game server. Please contact the R5Reloaded developers.'});
             return;
         }
 
-        const success = UpdateGameServerByID(gameServer);
-        if(success) {
-            res.status(200).send({});
-            return;
-        } else {
-            res.status(500).send({error: 'Something went wrong on our side.. Please contact R5R developers.'});
-            return;
-        }
+        UpdateGameServerByID(gameServer);
+        res.status(200).send({});
     }
-}
+};
 
 export const GetPrivateServerInfo: RouteOptions = {
     method: 'POST',
@@ -140,4 +135,4 @@ export const GetPrivateServerInfo: RouteOptions = {
         }
         res.send({gameServer});
     }
-}
+};

@@ -11,6 +11,10 @@ export function GetPrivateGameServers() {
     return Object.values(gameServers).filter(gs => gs.password);
 }
 
+export function GetAllGameServers() {
+    return Object.values(gameServers);
+}
+
 export function FindGameServerByID(ID: string): GameServer {
     return gameServers[ID];
 }
@@ -37,7 +41,6 @@ export function UpdateGameServerByID(newInfo: GameServer) {
     if(!gameServers[ID].publicRef) {
         gameServers[ID].publicRef = Buffer.from(Math.random().toString()).toString("base64").substr(10, 5);
     }
-    return true;
 }
 
 export function RunGameServersListCleanJob() {

@@ -1,5 +1,5 @@
 import { RouteOptions } from "fastify";
-import { IsUserBanned, UpdateUserBanStatus } from "../state/ban_system";
+import { IsUserBanned, UpdateUserBanStatus } from "../../state/ban_system";
 
 export const GetIsUserBannedRoute: RouteOptions = {
     method: 'POST',

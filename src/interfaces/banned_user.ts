@@ -3,12 +3,12 @@ import { Schema, model } from 'mongoose';
 
 interface BannedUser {
     oid?: number,
-    ipAddress?: string,
+    ip?: string,
 }
 
 const BannedUserSchema = new Schema({
     oid: Number,
-    ipAddress: String
+    ip: String
 });
 
 const BannedUserModel = model<BannedUser>('BannedUser', BannedUserSchema);

@@ -9,14 +9,14 @@ export const GetIsUserBannedRoute: RouteOptions = {
             type: 'object',
             properties: {
                 oid: { type: 'number', nullable: true },
-                ipAddress: { type: 'string', nullable: true }
+                ip: { type: 'string', nullable: true }
             }
         },
         response: {
             200: {
                 type: 'object',
                 properties: {
-                    isBanned: { type: 'boolean' }
+                    banned: { type: 'boolean' }
                 }
             },
             404: {
@@ -35,11 +35,11 @@ export const GetIsUserBannedRoute: RouteOptions = {
     },
     handler: async (req, res) => {
         const oid = (req.body as any).oid;
-        const ipAddress = (req.body as any).ipAddress;
+        const ip = (req.body as any).ip;
 
         try {
-            const isBanned = await IsUserBanned(oid, ipAddress);
-            res.send({ isBanned });
+            const banned = await IsUserBanned(oid, ip);
+            res.send({ banned });
         } catch (err) {
             res.status(500).send({ error: err.message });
         }
@@ -55,9 +55,9 @@ export const UpdateUserBanStatusRoute: RouteOptions = {
         body: {
             type: 'object',
             properties: {
-                isBanned: { type: 'boolean' },
+                banned: { type: 'boolean' },
                 oid: { type: 'number', nullable: true },
-                ipAddress: { type: 'string', nullable: true },
+                ip: { type: 'string', nullable: true },
                 password: { type: 'string' }
             }
         },
@@ -83,9 +83,9 @@ export const UpdateUserBanStatusRoute: RouteOptions = {
         }
     },
     handler: async (req, res) => {
-        const isBanned = (req.body as any).isBanned;
+        const banned = (req.body as any).banned;
         const oid = (req.body as any).oid;
-        const ipAddress = (req.body as any).ipAddress;
+        const ip = (req.body as any).ip;
         const password = (req.body as any).password;
 
         if(password !== process.env.ADMIN_PASSWORD) {
@@ -94,7 +94,7 @@ export const UpdateUserBanStatusRoute: RouteOptions = {
         }
 
         try {
-            const hadEffect = await UpdateUserBanStatus(isBanned, oid, ipAddress);
+            const hadEffect = await UpdateUserBanStatus(banned, oid, ip);
             res.send({ hadEffect });
         } catch (err) {
             res.status(500).send({ error: err.message });

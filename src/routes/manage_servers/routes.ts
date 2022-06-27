@@ -12,26 +12,21 @@ export const GetGameServersListRoute: RouteOptions = {
             200: {
                 type: 'object',
                 properties: {
-                    publicServers: {
+                    servers: {
                         type: 'array',
                         items: {
                             $ref: 'GameServerFullSchema'
                         }
                     },
-                    privateServers: {
-                        type: 'array',
-                        items: {
-                            $ref: 'PrivateGameServerPublicPropsSchema'
-                        }
-                    }
+                    success: { type: 'boolean' }
                 }
             }
         }
     },
     handler: (req, res) => {
         res.send({
-            publicServers: GetPublicGameServers(),
-            privateServers: GetPrivateGameServers()
+            servers: GetPublicGameServers(),
+            success: true // FIXME: Add SDK version check.
         });
     }
 };
@@ -68,12 +63,12 @@ export const UpdateGameServerRoute: RouteOptions = {
     },
     handler: async (req, res) => {
         const gameServer = ((req.body as any).gameServer) as GameServer;
-        gameServer.ipAddress = req.ip;
+        gameServer.ip = req.ip;
         
-        const { ipAddress, gamePort, encryptionKey } = gameServer;
+        const { ip, port, key } = gameServer;
 
         try {
-            const succeededPinging = await CheckGameServerConnection(ipAddress, gamePort, encryptionKey);
+            const succeededPinging = await CheckGameServerConnection(ip, port, key);
             if(!succeededPinging) {
                 res.status(403).send({error: 'Game server connection check failed.'});
                 return;

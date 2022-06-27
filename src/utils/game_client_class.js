@@ -134,7 +134,7 @@ class rSrcClient extends EventEmitter {
 
     this.connectionSettings = constgs
 
-    this.crypto = new rSrcNetCrypto(this.connectionSettings.encryptionKey)
+    this.crypto = new rSrcNetCrypto(this.connectionSettings.key)
     this.net = new rSrcNetClient(this)
     
     this.on("data", this.onData.bind(this));

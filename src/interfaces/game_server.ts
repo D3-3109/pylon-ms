@@ -4,24 +4,24 @@ import { GameMod } from './game_mod';
 export interface GameServer {
     name: string,
     description: string,
+
     password?: string,
+    hidden: boolean,
 
-
-    playerCount: number,
-    maxPlayerCount: number,
+    map: string,
     playlist: string,
-    mapName: string,
     
     mods: GameMod[],
 
-    ipAddress: string,
-    gamePort: number,
-    encryptionKey: string,
-    remoteChecksum: string,
-    
+    ip: string,
+    port: number,
+    key: string,
 
-    reloadedVersion: string,
+    checksum: string,
+    version: string,
 
+    playerCount: number,
+    maxPlayers: number,
     lastHeartbeat: number,
     
     publicRef?: string
@@ -38,16 +38,16 @@ export const GameServerFullSchema = {
         description: { type: 'string' },
         password: { type: 'string', nullable: true },
         playerCount: { type: 'number' },
-        maxPlayerCount: { type: 'number' },
+        maxPlayers: { type: 'number' },
         playlist: { type: 'string' },
-        mapName: { type: 'string' },
+        map: { type: 'string' },
         mods: { 
             type: 'array',
             items: { $ref: 'GameModSchema' }
         },
-        ipAddress: { type: 'string' },
-        gamePort: { type: 'number' },
-        encryptionKey: { type: 'string' },
+        ip: { type: 'string' },
+        port: { type: 'number' },
+        key: { type: 'string' },
     }
 };
 
@@ -65,8 +65,8 @@ export const GameServerProvidedAuthInfoSchema = {
     $id: 'GameServerProvidedAuthInfoSchema',
     type: 'object',
     properties: {
-        gamePort: { type: 'number' },
-        encryptionKey: { type: 'string' },
+        port: { type: 'number' },
+        key: { type: 'string' },
     }
 }
 
@@ -74,10 +74,10 @@ export function GetGameServerID(gameServer: GameServer): string {
     if(gameServer.cachedID) return gameServer.cachedID;
 
 
-    gameServer.cachedID = MakeGameServerID(gameServer.ipAddress, gameServer.gamePort, gameServer.encryptionKey);
+    gameServer.cachedID = MakeGameServerID(gameServer.ip, gameServer.port, gameServer.key);
     return gameServer.cachedID;
 }
 
-export function MakeGameServerID(ipAddress: string, gamePort: number, encryptionKey: string) {
-    return ipAddress + ":" + gamePort + ":" + encryptionKey;
+export function MakeGameServerID(ip: string, port: number, key: string) {
+    return ip + ":" + port + ":" + key;
 }

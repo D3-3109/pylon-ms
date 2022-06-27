@@ -1,13 +1,13 @@
 import rSrcClient from '../../utils/game_client_class.js';
 
-export function CheckGameServerConnection(ipAddress: string, gamePort: number, encryptionKey: string): Promise<boolean> {
+export function CheckGameServerConnection(ip: string, port: number, key: string): Promise<boolean> {
     return new Promise<boolean>((ok, fail) => {
 
         try {
             const client = new rSrcClient({
-                encryptionKey,
-                ip: ipAddress,
-                port: gamePort,
+                key,
+                ip: ip,
+                port: port,
                 uid: 1000000001337n,
             });
     
